@@ -72,3 +72,21 @@ def test_cli_ambiguous_code_uses_system_that_knows_it(built_db, capsys):
     # V12.51 only exists in the sample ICD-9 GEM, so ICD-9 is chosen
     assert main(["--db", str(built_db), "convert", "V12.51"]) == 0
     assert "[ICD9]" in capsys.readouterr().out
+
+
+def test_build_ignores_addenda_files(tmp_path):
+    raw = tmp_path / "raw"
+    raw.mkdir()
+    (raw / "2018_I9gem.txt").write_text((FIXTURES / "I9gem_sample.txt").read_text())
+    (raw / "icd10cm_codes_2027.txt").write_text((FIXTURES / "icd10cm_codes_sample.txt").read_text())
+    # an addenda file sorts after the real one and has a different format
+    (raw / "icd10cm_codes_addenda_2027.txt").write_text("Add:    I509    Heart failure\nDelete:\n")
+    assert main(["--db", str(tmp_path / "a.db"), "build", "--from-dir", str(raw)]) == 0
+
+
+def test_build_reports_bad_file_without_traceback(tmp_path, capsys):
+    raw = tmp_path / "raw"
+    raw.mkdir()
+    (raw / "2018_I9gem.txt").write_text("42800 I509\n")  # missing flags column
+    assert main(["--db", str(tmp_path / "b.db"), "build", "--from-dir", str(raw)]) == 2
+    assert "could not read 2018_I9gem.txt" in capsys.readouterr().err

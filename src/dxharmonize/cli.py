@@ -29,9 +29,17 @@ FILE_PATTERNS = {
 }
 
 
+# CMS ships "addenda" files (only this year's changes, different format) next
+# to the full code lists, with similar names. They must never be picked.
+EXCLUDED_WORDS = ("addenda", "addendum")
+
+
 def _find(directory: Path, key: str) -> Path | None:
     for pattern in FILE_PATTERNS[key]:
-        matches = sorted(directory.rglob(pattern))
+        matches = sorted(
+            p for p in directory.rglob(pattern)
+            if not any(word in p.name.lower() for word in EXCLUDED_WORDS)
+        )
         if matches:
             return matches[-1]  # latest year sorts last
     return None
@@ -68,7 +76,11 @@ def cmd_build(args: argparse.Namespace) -> int:
             if path is None:
                 print(f"  skipped {key} (file not found)")
                 continue
-            n = loader(conn, system, Path(path))
+            try:
+                n = loader(conn, system, Path(path))
+            except ValueError as exc:
+                print(f"error: could not read {Path(path).name}: {exc}", file=sys.stderr)
+                return 2
             db.set_metadata(conn, key, Path(path).name)
             print(f"  loaded {n:>7,} rows from {Path(path).name}")
     print(f"Database ready: {args.db or db.default_db_path()}")
