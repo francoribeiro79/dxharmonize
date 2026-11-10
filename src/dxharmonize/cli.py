@@ -162,7 +162,7 @@ def cmd_convert_file(args: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
-        prog="dxharmonize", description="Convert and search ICD-9-CM / ICD-10-CM diagnosis codes."
+        prog="dxharmonize", description="Harmonise clinical datasets that mix ICD-9-CM and ICD-10-CM diagnosis codes."
     )
     p.add_argument("--version", action="version", version=f"dxharmonize {__version__}")
     p.add_argument("--db", type=Path, help="database path (default: ~/.dxharmonize/dxharmonize.db)")
