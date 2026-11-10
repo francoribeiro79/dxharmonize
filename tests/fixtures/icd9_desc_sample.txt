@@ -1,0 +1,5 @@
+0010 Cholera due to vibrio cholerae
+4019 Unspecified essential hypertension
+42800 Congestive heart failure, unspecified
+25000 Diabetes mellitus without mention of complication, type II or unspecified type, not stated as uncontrolled
+4289 Heart failure, unspecified

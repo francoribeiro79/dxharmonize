@@ -1,0 +1,7 @@
+A000    Cholera due to Vibrio cholerae 01, biovar cholerae
+E119    Type 2 diabetes mellitus without complications
+E1129   Type 2 diabetes mellitus with other diabetic kidney complication
+I10     Essential (primary) hypertension
+I509    Heart failure, unspecified
+I501    Left ventricular failure, unspecified
+N189    Chronic kidney disease, unspecified

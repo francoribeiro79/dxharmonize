@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+
+# Data downloaded from CMS and local databases (never commit)
+data/raw/*
+!data/raw/.gitkeep
+*.db
+
+# Secrets and editors
+.env
+.vscode/
+.idea/
+.DS_Store
