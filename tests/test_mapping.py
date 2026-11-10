@@ -1,5 +1,5 @@
-from icdmap.codes import System
-from icdmap.mapping import convert, search
+from dxharmonize.codes import System
+from dxharmonize.mapping import convert, search
 
 
 def test_exact(conn):

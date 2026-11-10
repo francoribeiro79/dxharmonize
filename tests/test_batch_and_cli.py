@@ -2,9 +2,9 @@ import csv
 
 import pytest
 
-from icdmap.batch import convert_csv
-from icdmap.cli import main
-from icdmap.codes import System
+from dxharmonize.batch import convert_csv
+from dxharmonize.cli import main
+from dxharmonize.codes import System
 
 from .conftest import FIXTURES
 
@@ -60,7 +60,7 @@ def test_cli_convert_invalid_code(built_db, capsys):
 
 def test_cli_requires_build(tmp_path, capsys):
     assert main(["--db", str(tmp_path / "empty.db"), "convert", "401.9"]) == 2
-    assert "icdmap build" in capsys.readouterr().err
+    assert "dxharmonize build" in capsys.readouterr().err
 
 
 def test_cli_search(built_db, capsys):

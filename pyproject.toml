@@ -3,21 +3,21 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "icdmap"
+name = "dxharmonize"
 version = "0.1.0"
-description = "Convert and search ICD-9-CM / ICD-10-CM diagnosis codes using the official CMS GEMs"
+description = "Harmonise clinical datasets that mix ICD-9-CM and ICD-10-CM diagnosis codes, using the official CMS GEMs"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Francisco Ribeiro" }]
-keywords = ["icd-9", "icd-10", "medical coding", "health informatics", "gems"]
+keywords = ["icd-9", "icd-10", "data harmonisation", "clinical data", "health informatics", "gems"]
 dependencies = []
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff>=0.5"]
 
 [project.scripts]
-icdmap = "icdmap.cli:main"
+dxharmonize = "dxharmonize.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

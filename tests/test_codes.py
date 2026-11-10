@@ -1,6 +1,6 @@
 import pytest
 
-from icdmap.codes import System, candidate_systems, compact, detect_system, format_code
+from dxharmonize.codes import System, candidate_systems, compact, detect_system, format_code
 
 
 @pytest.mark.parametrize("raw, expected", [("428.0", "4280"), (" i50.9 ", "I509"), ("E11.9", "E119")])

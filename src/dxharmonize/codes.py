@@ -2,7 +2,7 @@
 
 The official CMS files store codes without the decimal point (``42800``,
 ``I509``). Users usually type them with a point (``428.0``, ``I50.9``).
-Internally icdmap always works with the *compact* form and only adds the
+Internally dxharmonize always works with the *compact* form and only adds the
 point when showing codes to a person.
 """
 

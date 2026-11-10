@@ -1,4 +1,4 @@
-"""Command-line interface: ``icdmap build | convert | search | convert-file``."""
+"""Command-line interface: ``dxharmonize build | convert | search | convert-file``."""
 
 from __future__ import annotations
 
@@ -96,7 +96,7 @@ def _print_result(res: ConversionResult) -> None:
 def cmd_convert(args: argparse.Namespace) -> int:
     conn = db.connect(args.db)
     if not db.is_built(conn):
-        print("error: database is empty — run `icdmap build` first.", file=sys.stderr)
+        print("error: database is empty — run `dxharmonize build` first.", file=sys.stderr)
         return 2
     status = 0
     for code in args.codes:
@@ -130,7 +130,7 @@ def cmd_search(args: argparse.Namespace) -> int:
 def cmd_convert_file(args: argparse.Namespace) -> int:
     conn = db.connect(args.db)
     if not db.is_built(conn):
-        print("error: database is empty — run `icdmap build` first.", file=sys.stderr)
+        print("error: database is empty — run `dxharmonize build` first.", file=sys.stderr)
         return 2
     output = args.output or args.input.with_name(f"{args.input.stem}_converted.csv")
     try:
@@ -150,10 +150,10 @@ def cmd_convert_file(args: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
-        prog="icdmap", description="Convert and search ICD-9-CM / ICD-10-CM diagnosis codes."
+        prog="dxharmonize", description="Convert and search ICD-9-CM / ICD-10-CM diagnosis codes."
     )
-    p.add_argument("--version", action="version", version=f"icdmap {__version__}")
-    p.add_argument("--db", type=Path, help="database path (default: ~/.icdmap/icdmap.db)")
+    p.add_argument("--version", action="version", version=f"dxharmonize {__version__}")
+    p.add_argument("--db", type=Path, help="database path (default: ~/.dxharmonize/dxharmonize.db)")
     sub = p.add_subparsers(dest="command", required=True)
 
     b = sub.add_parser("build", help="build the local database from CMS files")

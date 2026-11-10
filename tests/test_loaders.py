@@ -1,6 +1,6 @@
 import pytest
 
-from icdmap.loaders import GemFlags, parse_descriptions, parse_gems
+from dxharmonize.loaders import GemFlags, parse_descriptions, parse_gems
 
 from .conftest import FIXTURES
 

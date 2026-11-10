@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
-from icdmap import db
-from icdmap.codes import System
+from dxharmonize import db
+from dxharmonize.codes import System
 
 FIXTURES = Path(__file__).parent / "fixtures"
 

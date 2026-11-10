@@ -1,8 +1,8 @@
 """Local SQLite database that holds the official code tables.
 
-The database is built once from the CMS files (``icdmap build``) and then
+The database is built once from the CMS files (``dxharmonize build``) and then
 queried by every other command. It is a single file, by default
-``~/.icdmap/icdmap.db``; set ``ICDMAP_DB`` to use another path.
+``~/.dxharmonize/dxharmonize.db``; set ``DXHARMONIZE_DB`` to use another path.
 """
 
 from __future__ import annotations
@@ -40,10 +40,10 @@ CREATE TABLE IF NOT EXISTS metadata (
 
 
 def default_db_path() -> Path:
-    env = os.environ.get("ICDMAP_DB")
+    env = os.environ.get("DXHARMONIZE_DB")
     if env:
         return Path(env)
-    return Path.home() / ".icdmap" / "icdmap.db"
+    return Path.home() / ".dxharmonize" / "dxharmonize.db"
 
 
 def connect(path: Path | None = None) -> sqlite3.Connection:
