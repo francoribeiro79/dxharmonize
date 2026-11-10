@@ -30,6 +30,17 @@ def test_convert_csv(conn, tmp_path):
     assert rows[1]["dx_converted"] == "I10"
     assert rows[1]["dx_mapping"] == "exact"
     assert rows[3]["dx_mapping"] == "empty"
+    assert rows[1]["dx_mapping_detail"] == '{"kind": "exact", "scenarios": [[["I10"]]]}'
+
+
+def test_convert_csv_keeps_or_and_meaning(conn, tmp_path):
+    src = tmp_path / "in.csv"
+    out = tmp_path / "out.csv"
+    _write_csv(src, [["1", "401.1"], ["2", "250.40"]])
+    convert_csv(conn, src, out, "dx", System.ICD9)
+    rows = list(csv.DictReader(out.open()))
+    assert rows[0]["dx_converted"] == "I10 | I16.9"     # alternatives: one OR the other
+    assert rows[1]["dx_converted"] == "E11.29 + N18.9"  # combination: both together
 
 
 def test_convert_csv_missing_column(conn, tmp_path):

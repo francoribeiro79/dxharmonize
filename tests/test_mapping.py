@@ -73,3 +73,43 @@ def test_split_negated(conn):
     assert "I110" in [r["code"] for r in kept]
     assert "O1000" in [r["code"] for r in kept]
     assert [r["code"] for r in hidden] == ["I119"]
+
+
+# --- how a conversion is represented in the CSV output -------------------
+# "|" means "or" (choose one), "+" means "and" (use together)
+
+
+def test_output_single_code(conn):
+    res = convert(conn, "401.9", System.ICD9)
+    assert res.structure() == [[["I10"]]]
+    assert res.to_text() == "I10"
+
+
+def test_output_alternatives_use_or(conn):
+    res = convert(conn, "401.1", System.ICD9)
+    assert res.structure() == [[["I10", "I16.9"]]]
+    assert res.to_text() == "I10 | I16.9"
+
+
+def test_output_combination_uses_and(conn):
+    res = convert(conn, "250.40", System.ICD9)
+    assert res.structure() == [[["E11.29"], ["N18.9"]]]
+    assert res.to_text() == "E11.29 + N18.9"
+
+
+def test_output_combination_with_alternatives(conn):
+    res = convert(conn, "250.41", System.ICD9)
+    assert res.to_text() == "(E10.29 | E11.29) + N18.9"
+
+
+def test_output_no_conversion(conn):
+    res = convert(conn, "999.99", System.ICD9)
+    assert res.structure() == []
+    assert res.to_text() == ""
+
+
+def test_output_json(conn):
+    import json
+
+    res = convert(conn, "401.1", System.ICD9)
+    assert json.loads(res.to_json()) == {"kind": "approximate", "scenarios": [[["I10", "I16.9"]]]}

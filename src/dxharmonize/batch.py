@@ -26,19 +26,27 @@ def convert_csv(
     column: str,
     source_system: System,
 ) -> BatchReport:
-    """Add ``<column>_converted`` and ``<column>_mapping`` columns to a CSV.
+    """Add ``<column>_converted``, ``<column>_mapping`` and ``<column>_mapping_detail``.
+
+    ``_converted`` is for people (``|`` = or, ``+`` = and), ``_mapping_detail``
+    is JSON for programs.
 
     Each distinct code is converted once and cached, so large files with
     repeated codes stay fast.
     """
     report = BatchReport()
-    cache: dict[str, tuple[str, str]] = {}
+    cache: dict[str, tuple[str, str, str]] = {}
 
     with input_path.open(newline="", encoding="utf-8-sig") as fin:
         reader = csv.DictReader(fin)
         if reader.fieldnames is None or column not in reader.fieldnames:
             raise KeyError(f"column {column!r} not found in {input_path.name}")
-        out_fields = [*reader.fieldnames, f"{column}_converted", f"{column}_mapping"]
+        out_fields = [
+            *reader.fieldnames,
+            f"{column}_converted",
+            f"{column}_mapping",
+            f"{column}_mapping_detail",
+        ]
 
         with output_path.open("w", newline="", encoding="utf-8") as fout:
             writer = csv.DictWriter(fout, fieldnames=out_fields)
@@ -47,17 +55,18 @@ def convert_csv(
                 raw = (row.get(column) or "").strip()
                 report.total += 1
                 if not raw:
-                    converted, kind = "", "empty"
+                    converted, kind, detail = "", "empty", ""
                 else:
                     key = compact(raw)
                     if key not in cache:
                         res = convert(conn, key, source_system)
-                        cache[key] = (";".join(dict.fromkeys(res.target_codes)), res.kind)
-                    converted, kind = cache[key]
+                        cache[key] = (res.to_text(), res.kind, res.to_json())
+                    converted, kind, detail = cache[key]
                     if kind in ("no_map", "not_found"):
                         report.unmapped[key] += 1
                 report.kinds[kind] += 1
                 row[f"{column}_converted"] = converted
                 row[f"{column}_mapping"] = kind
+                row[f"{column}_mapping_detail"] = detail
                 writer.writerow(row)
     return report

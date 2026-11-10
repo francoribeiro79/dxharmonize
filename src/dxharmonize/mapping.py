@@ -16,11 +16,12 @@ situations, and :func:`convert` reports which one applies:
 
 from __future__ import annotations
 
+import json
 import re
 import sqlite3
 from dataclasses import dataclass, field
 
-from .codes import System, compact
+from .codes import System, compact, format_code
 
 
 @dataclass
@@ -45,6 +46,51 @@ class ConversionResult:
         if self.kind == "combination":
             return [t.code for lists in self.scenarios.values() for cl in lists for t in cl]
         return [t.code for t in self.targets]
+
+    def structure(self) -> list[list[list[str]]]:
+        """The conversion as nested lists: scenarios → parts → alternatives.
+
+        Always three levels, whatever the mapping type, so programs reading
+        the output only have to handle one shape:
+
+        * ``[[["I10"]]]``                 one code
+        * ``[[["I10", "I16.9"]]]``        alternatives — choose one
+        * ``[[["E11.29"], ["N18.9"]]]``   combination — one code from each part
+        * ``[]``                          no conversion available
+        """
+        target_system = self.source_system.other()
+
+        def fmt(t: Target) -> str:
+            return format_code(t.code, target_system)
+
+        if self.kind == "combination":
+            return [
+                [[fmt(t) for t in part] for part in parts]
+                for _, parts in sorted(self.scenarios.items())
+            ]
+        if self.targets:
+            return [[[fmt(t) for t in self.targets]]]
+        return []
+
+    def to_text(self) -> str:
+        """Human-readable form: ``|`` means "or", ``+`` means "and".
+
+        Examples: ``I10 | I16.9``, ``E11.29 + N18.9``, ``(A | B) + C``.
+        Separate scenarios (rare) are joined with ``||``.
+        """
+        scenario_texts = []
+        for parts in self.structure():
+            if len(parts) == 1:
+                scenario_texts.append(" | ".join(parts[0]))
+            else:
+                scenario_texts.append(" + ".join(
+                    p[0] if len(p) == 1 else "(" + " | ".join(p) + ")" for p in parts
+                ))
+        return " || ".join(scenario_texts)
+
+    def to_json(self) -> str:
+        """Machine-readable form, e.g. ``{"kind": "exact", "scenarios": [[["I10"]]]}``."""
+        return json.dumps({"kind": self.kind, "scenarios": self.structure()})
 
 
 def describe(conn: sqlite3.Connection, code: str, system: System) -> str | None:
