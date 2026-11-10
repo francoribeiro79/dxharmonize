@@ -90,3 +90,17 @@ def test_build_reports_bad_file_without_traceback(tmp_path, capsys):
     (raw / "2018_I9gem.txt").write_text("42800 I509\n")  # missing flags column
     assert main(["--db", str(tmp_path / "b.db"), "build", "--from-dir", str(raw)]) == 2
     assert "could not read 2018_I9gem.txt" in capsys.readouterr().err
+
+
+def test_cli_search_hides_negated_results(built_db, capsys):
+    assert main(["--db", str(built_db), "search", "heart failure", "--system", "icd10"]) == 0
+    out = capsys.readouterr().out
+    main_part, hidden_part = out.split("Hidden")
+    assert "I11.0" in main_part and "I11.9" not in main_part
+    assert "I11.9" in hidden_part
+
+
+def test_cli_search_keep_negated(built_db, capsys):
+    assert main(["--db", str(built_db), "search", "heart failure", "--keep-negated"]) == 0
+    out = capsys.readouterr().out
+    assert "I11.9" in out and "Hidden" not in out

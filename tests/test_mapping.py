@@ -1,5 +1,7 @@
+import pytest
+
 from dxharmonize.codes import System
-from dxharmonize.mapping import convert, search
+from dxharmonize.mapping import convert, is_negated, search, split_negated
 
 
 def test_exact(conn):
@@ -50,3 +52,24 @@ def test_search_filters_system(conn):
 
 def test_search_empty_text(conn):
     assert search(conn, "   ") == []
+
+
+@pytest.mark.parametrize(
+    "description, expected",
+    [
+        ("Hypertensive heart disease without heart failure", True),
+        ("Hypertensive heart disease with heart failure", False),
+        ("Heart failure, unspecified", False),
+        ("Hypertension, with or without heart failure", False),  # may be present
+        ("HYPERTENSIVE HEART DISEASE WITHOUT HEART FAILURE", True),  # case does not matter
+    ],
+)
+def test_is_negated(description, expected):
+    assert is_negated(description, "heart failure") is expected
+
+
+def test_split_negated(conn):
+    kept, hidden = split_negated(search(conn, "heart failure", System.ICD10), "heart failure")
+    assert "I110" in [r["code"] for r in kept]
+    assert "O1000" in [r["code"] for r in kept]
+    assert [r["code"] for r in hidden] == ["I119"]

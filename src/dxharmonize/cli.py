@@ -9,7 +9,7 @@ from pathlib import Path
 from . import __version__, db
 from .batch import convert_csv
 from .codes import System, candidate_systems, format_code
-from .mapping import ConversionResult, convert, search
+from .mapping import ConversionResult, convert, search, split_negated
 
 KIND_LABELS = {
     "exact": "exact match",
@@ -127,15 +127,30 @@ def cmd_convert(args: argparse.Namespace) -> int:
     return status
 
 
+def _print_row(r) -> None:
+    system = System(r["system"])
+    print(f"{format_code(r['code'], system):<9} [{system.value.upper()}]  {r['description']}")
+
+
 def cmd_search(args: argparse.Namespace) -> int:
     conn = db.connect(args.db)
-    rows = search(conn, args.text, _system_arg(args.system), args.limit)
-    if not rows:
+    # Fetch every match first, so hidden results do not use up the --limit.
+    rows = search(conn, args.text, _system_arg(args.system), limit=None)
+    if args.keep_negated:
+        kept, hidden = rows, []
+    else:
+        kept, hidden = split_negated(rows, args.text)
+    if not kept and not hidden:
         print("no results")
         return 1
-    for r in rows:
-        system = System(r["system"])
-        print(f"{format_code(r['code'], system):<9} [{system.value.upper()}]  {r['description']}")
+    for r in kept[: args.limit]:
+        _print_row(r)
+    if hidden:
+        phrase = " ".join(args.text.split())
+        print(f'\nHidden ({len(hidden)}, description says "without {phrase}"):')
+        for r in hidden[: args.limit]:
+            _print_row(r)
+        print("Use --keep-negated to include them in the results.")
     return 0
 
 
@@ -186,6 +201,8 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("text")
     s.add_argument("--system", choices=[s.value for s in System])
     s.add_argument("--limit", type=int, default=20)
+    s.add_argument("--keep-negated", action="store_true",
+                   help='do not hide results that say "without <your search>"')
     s.set_defaults(func=cmd_search)
 
     f = sub.add_parser("convert-file", help="convert a column of codes in a CSV file")

@@ -5,3 +5,6 @@ I10     Essential (primary) hypertension
 I509    Heart failure, unspecified
 I501    Left ventricular failure, unspecified
 N189    Chronic kidney disease, unspecified
+I110    Hypertensive heart disease with heart failure
+I119    Hypertensive heart disease without heart failure
+O1000   Pre-existing essential hypertension complicating pregnancy, with or without heart failure

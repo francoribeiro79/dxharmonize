@@ -16,6 +16,7 @@ situations, and :func:`convert` reports which one applies:
 
 from __future__ import annotations
 
+import re
 import sqlite3
 from dataclasses import dataclass, field
 
@@ -94,9 +95,12 @@ def convert(conn: sqlite3.Connection, code: str, source_system: System) -> Conve
 
 
 def search(
-    conn: sqlite3.Connection, text: str, system: System | None = None, limit: int = 20
+    conn: sqlite3.Connection, text: str, system: System | None = None, limit: int | None = 20
 ) -> list[sqlite3.Row]:
-    """Find codes whose description contains every word in ``text``."""
+    """Find codes whose description contains every word in ``text``.
+
+    ``limit=None`` returns every match.
+    """
     words = [w for w in text.lower().split() if w]
     if not words:
         return []
@@ -105,10 +109,35 @@ def search(
     if system is not None:
         clauses.append("system = ?")
         params.append(system.value)
-    params.append(limit)
     sql = (
         "SELECT system, code, description FROM descriptions WHERE "
         + " AND ".join(clauses)
-        + " ORDER BY system, code LIMIT ?"
+        + " ORDER BY system, code"
     )
+    if limit is not None:
+        sql += " LIMIT ?"
+        params.append(limit)
     return conn.execute(sql, params).fetchall()
+
+
+def is_negated(description: str, text: str) -> bool:
+    """True if the description says the searched condition is *absent*.
+
+    ICD-10-CM writes absence as "without <condition>", e.g. "Hypertensive
+    heart disease without heart failure". "with or without <condition>"
+    means the condition may be present, so it does not count as negated.
+    """
+    phrase = " ".join(text.lower().split())
+    if not phrase:
+        return False
+    pattern = re.compile(r"(with or )?without " + re.escape(phrase))
+    return any(m.group(1) is None for m in pattern.finditer(description.lower()))
+
+
+def split_negated(
+    rows: list[sqlite3.Row], text: str
+) -> tuple[list[sqlite3.Row], list[sqlite3.Row]]:
+    """Separate search results into (kept, hidden-because-negated)."""
+    kept = [r for r in rows if not is_negated(r["description"], text)]
+    hidden = [r for r in rows if is_negated(r["description"], text)]
+    return kept, hidden
