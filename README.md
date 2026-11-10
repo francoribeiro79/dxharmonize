@@ -1,8 +1,8 @@
 # dxharmonize
 
-**Harmonise clinical datasets that mix ICD-9-CM and ICD-10-CM diagnosis codes — and know how reliable the result is.**
+**Harmonise clinical datasets that mix ICD-9-CM and ICD-10-CM diagnosis codes, and know how reliable the result is.**
 
-Many countries switched hospital coding from ICD-9-CM to ICD-10-CM: the United States in October 2015, Portugal in January 2017. Any study whose data crosses that date — hospital discharge registries, MIMIC-IV, claims data — has diagnoses in two systems. Counting heart-failure admissions per year, for example, shows a false jump at the transition unless the codes are put into one system first.
+Many countries switched hospital coding from ICD-9-CM to ICD-10-CM: the United States in October 2015, Portugal in January 2017. Any study whose data crosses that date (hospital discharge registries, MIMIC-IV, claims data) has diagnoses in two systems. Counting heart-failure admissions per year, for example, shows a false jump at the transition unless the codes are put into one system first.
 
 Converting codes is the easy part. The hard part is knowing **how much to trust the conversion**: many ICD-9 codes have only an approximate ICD-10 equivalent, some need several codes together, and some have none. `dxharmonize` builds a local database from the official CMS General Equivalence Mappings (GEMs) and reports the mapping type for every code instead of hiding it behind a silent best guess.
 
