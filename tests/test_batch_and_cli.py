@@ -115,3 +115,42 @@ def test_cli_search_keep_negated(built_db, capsys):
     assert main(["--db", str(built_db), "search", "heart failure", "--keep-negated"]) == 0
     out = capsys.readouterr().out
     assert "I11.9" in out and "Hidden" not in out
+
+
+def test_convert_csv_flags_invalid_codes(conn, tmp_path):
+    src = tmp_path / "in.csv"
+    out = tmp_path / "out.csv"
+    _write_csv(src, [["1", "401.9"], ["2", "abc"], ["3", "42"], ["4", "abc"]])
+    report = convert_csv(conn, src, out, "dx", System.ICD9)
+    assert report.kinds["invalid"] == 3
+    assert report.invalid == {"abc": 2, "42": 1}
+    assert report.unmapped == {}  # invalid values are not "codes without a mapping"
+    rows = list(csv.DictReader(out.open()))
+    assert rows[1]["dx_mapping"] == "invalid"
+
+
+def test_convert_csv_empty_file(conn, tmp_path):
+    src = tmp_path / "empty.csv"
+    src.write_text("")
+    with pytest.raises(ValueError, match="empty"):
+        convert_csv(conn, src, tmp_path / "out.csv", "dx", System.ICD9)
+
+
+def test_convert_csv_reads_windows_1252(conn, tmp_path):
+    # Excel on Windows often saves CSVs like this; "São João" is not valid UTF-8 here
+    src = tmp_path / "excel.csv"
+    src.write_bytes("hospital,dx\nSão João,401.9\n".encode("cp1252"))
+    out = tmp_path / "out.csv"
+    report = convert_csv(conn, src, out, "dx", System.ICD9)
+    assert report.encoding == "cp1252"
+    rows = list(csv.DictReader(out.open(encoding="utf-8")))
+    assert rows[0]["hospital"] == "São João"  # accents preserved, output is UTF-8
+    assert rows[0]["dx_converted"] == "I10"
+
+
+def test_cli_convert_file_empty(built_db, tmp_path, capsys):
+    src = tmp_path / "empty.csv"
+    src.write_text("")
+    args = ["--db", str(built_db), "convert-file", str(src), "--column", "dx", "--from", "icd9"]
+    assert main(args) == 2
+    assert "empty" in capsys.readouterr().err

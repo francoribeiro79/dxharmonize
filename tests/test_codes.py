@@ -1,6 +1,13 @@
 import pytest
 
-from dxharmonize.codes import System, candidate_systems, compact, detect_system, format_code
+from dxharmonize.codes import (
+    System,
+    candidate_systems,
+    compact,
+    detect_system,
+    format_code,
+    is_valid,
+)
 
 
 @pytest.mark.parametrize("raw, expected", [("428.0", "4280"), (" i50.9 ", "I509"), ("E11.9", "E119")])
@@ -46,3 +53,19 @@ def test_detect_system_invalid(code):
 )
 def test_format_code(code, system, expected):
     assert format_code(code, system) == expected
+
+
+@pytest.mark.parametrize(
+    "code, system, expected",
+    [
+        ("428.0", System.ICD9, True),
+        ("V12.51", System.ICD9, True),
+        ("I50.9", System.ICD10, True),
+        ("abc", System.ICD9, False),   # typo
+        ("42", System.ICD9, False),    # truncated
+        ("I50.9", System.ICD9, False),  # right shape, wrong system
+        ("428.0", System.ICD10, False),
+    ],
+)
+def test_is_valid(code, system, expected):
+    assert is_valid(code, system) is expected

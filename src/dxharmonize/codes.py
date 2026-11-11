@@ -31,6 +31,16 @@ def compact(code: str) -> str:
     return code.strip().upper().replace(".", "")
 
 
+def is_valid(code: str, system: System) -> bool:
+    """True if ``code`` has the shape of a diagnosis code in ``system``.
+
+    This checks the *format* only (e.g. "abc" or "42" are never valid); a
+    well-formed code may still be absent from the official tables.
+    """
+    pattern = _ICD9_RE if system is System.ICD9 else _ICD10_RE
+    return bool(pattern.match(compact(code)))
+
+
 def candidate_systems(code: str) -> list[System]:
     """Return every system ``code`` could belong to, most likely first.
 

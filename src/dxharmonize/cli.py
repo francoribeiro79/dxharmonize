@@ -162,12 +162,18 @@ def cmd_convert_file(args: argparse.Namespace) -> int:
     output = args.output or args.input.with_name(f"{args.input.stem}_converted.csv")
     try:
         report = convert_csv(conn, args.input, output, args.column, System(args.source))
-    except KeyError as exc:
+    except (KeyError, ValueError) as exc:
         print(f"error: {exc.args[0]}", file=sys.stderr)
         return 2
+    if report.encoding != "utf-8-sig":
+        print(f"Note: input was not UTF-8; read it as {report.encoding}.")
     print(f"Converted {report.total:,} rows → {output}")
     for kind, n in report.kinds.most_common():
         print(f"  {kind:<12} {n:>8,}")
+    if report.invalid:
+        print("Invalid codes (check the source data):")
+        for value, n in report.invalid.most_common(10):
+            print(f"  {value:<8} {n:>6,}×")
     if report.unmapped:
         print("Most frequent codes without a mapping:")
         for code, n in report.unmapped.most_common(10):
