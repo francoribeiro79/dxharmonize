@@ -113,3 +113,15 @@ def test_output_json(conn):
 
     res = convert(conn, "401.1", System.ICD9)
     assert json.loads(res.to_json()) == {"kind": "approximate", "scenarios": [[["I10", "I16.9"]]]}
+
+
+def test_combination_mixed_with_plain_rows(conn):
+    # Real case from the 2018 GEMs: ICD-9 249.51 maps EITHER to a combination
+    # (one code from list 1 + E08.65) OR to E08.39 / E09.39 on their own.
+    res = convert(conn, "249.51", System.ICD9)
+    assert res.kind == "combination"
+    assert res.structure()[0] == [["E08.39", "E09.39"]]  # the plain alternatives
+    assert res.to_text() == (
+        "E08.39 | E09.39 || "
+        "(E08.311 | E08.319 | E08.36 | E09.311 | E09.319 | E09.36) + E08.65"
+    )

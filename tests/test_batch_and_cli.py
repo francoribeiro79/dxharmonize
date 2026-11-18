@@ -154,3 +154,23 @@ def test_cli_convert_file_empty(built_db, tmp_path, capsys):
     args = ["--db", str(built_db), "convert-file", str(src), "--column", "dx", "--from", "icd9"]
     assert main(args) == 2
     assert "empty" in capsys.readouterr().err
+
+
+def test_build_prefers_files_closest_to_the_folder(tmp_path):
+    from dxharmonize.cli import _find
+
+    (tmp_path / "sub").mkdir()
+    top = tmp_path / "I9gem_sample.txt"
+    deeper = tmp_path / "sub" / "2018_I9gem.txt"  # sorts after "I9gem..." by full path
+    top.write_text("x")
+    deeper.write_text("x")
+    assert _find(tmp_path, "icd9_gem") == top
+
+
+def test_build_picks_latest_year_at_same_level(tmp_path):
+    from dxharmonize.cli import _find
+
+    for year in ("2026", "2027"):
+        (tmp_path / year).mkdir()
+        (tmp_path / year / f"icd10cm_codes_{year}.txt").write_text("x")
+    assert _find(tmp_path, "icd10_desc").name == "icd10cm_codes_2027.txt"

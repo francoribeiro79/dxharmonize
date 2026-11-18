@@ -1,0 +1,59 @@
+01780 Tuberculosis of esophagus, unspecified
+01790 Tuberculosis of other specified organs, unspecified
+1741  Malignant neoplasm of central portion of female breast
+1907  Malignant neoplasm of lacrimal duct
+25000 Diabetes mellitus without mention of complication, type II or unspecified type, not stated as uncontrolled
+36273 Vitreoretinal dystrophies
+36321 Pars planitis
+36632 Cataract in inflammatory ocular disorders
+36634 Cataract in degenerative ocular disorders
+36916 Better eye: moderate vision impairment; lesser eye: total vision impairment
+37818 Alternating exotropia with other noncomitancies
+38510 Adhesive middle ear disease, unspecified as to involvement
+38511 Adhesions of drum head to incus
+38512 Adhesions of drum head to stapes
+38513 Adhesions of drum head to promontorium
+38519 Other middle ear adhesions and combinations
+4019  Unspecified essential hypertension
+412   Old myocardial infarction
+4280  Congestive heart failure, unspecified
+45341 Acute venous embolism and thrombosis of deep vessels of proximal lower extremity
+55303 Femoral hernia without mention of obstruction or gangrene, bilateral,recurrent
+64244 Mild or unspecified pre-eclampsia, postpartum condition or complication
+64264 Eclampsia, postpartum condition or complication
+73381 Malunion of fracture
+74783 Persistent fetal circulation
+75538 Longitudinal deficiency, tarsals or metatarsals, complete or partial (with or without incomplete phalangeal deficiency)
+75539 Longitudinal deficiency, phalanges, complete or partial
+75567 Anomalies of foot, not elsewhere classified
+75569 Other anomalies of lower limb, including pelvic girdle
+76077 Anticonvulsants affecting fetus or newborn via placenta or breast milk
+83810 Open dislocation of foot, unspecified
+86356 Injury to multiple sites in colon and rectum, with open wound into cavity
+86410 Injury to liver with open wound into cavity, unspecified injury
+8671  Injury to bladder and urethra, with open wound into cavity
+9090  Late effect of poisoning due to drug, medicinal or biological substance
+9091  Late effect of toxic effects of nonmedical substances
+9135  Insect bite, nonvenomous, of elbow, forearm, and wrist, infected
+94316 Erythema [first degree] of scapular region
+94404 Burn of unspecified degree of two or more digits of hand, including thumb
+E0008 Other external cause status
+E0150 Activities involving food preparation and clean up
+E8128 Other motor vehicle traffic accident involving collision with motor vehicle injuring other specified person
+E8680 Accidental poisoning by liquefied petroleum gas distributed in mobile containers
+E9290 Late effects of motor vehicle accident
+E9292 Late effects of accidental poisoning
+E9331 Antineoplastic and immunosuppressive drugs causing adverse effects in therapeutic use
+E9424 Coronary vasodilators causing adverse effects in therapeutic use
+E9530 Suicide and self-inflicted injury by hanging
+E959  Late effects of self-inflicted injury
+E969  Late effects of injury purposely inflicted by other person
+E9800 Poisoning by analgesics, antipyretics, and antirheumatics, undetermined whether accidentally or purposely inflicted
+E989  Late effects of injury, undetermined whether accidentally or purposely inflicted
+V140  Personal history of allergy to penicillin
+V1642 Family history of malignant neoplasm of prostate
+V222  Pregnant state, incidental
+V604  No other household member able to render care
+V690  Lack of physical exercise
+V8302 Symptomatic hemophilia A carrier
+V9199 Other specified multiple gestation, unable to determine number of placenta and number of amniotic sacs

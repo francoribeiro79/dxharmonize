@@ -1,0 +1,61 @@
+A1889   Tuberculosis of other sites
+C50111  Malignant neoplasm of central portion of right female breast
+C6950   Malignant neoplasm of unspecified lacrimal gland and duct
+E119    Type 2 diabetes mellitus without complications
+H26221  Cataract secondary to ocular disorders (degenerative) (inflammatory), right eye
+H3023   Posterior cyclitis, bilateral
+H3551   Vitreoretinal dystrophy
+H5018   Alternating exotropia with other noncomitancies
+H541151 Blindness right eye category 5, low vision left eye category 1
+H541215 Low vision right eye category 1, blindness left eye category 5
+H7411   Adhesive right middle ear disease
+I10     Essential (primary) hypertension
+I169    Hypertensive crisis, unspecified
+I252    Old myocardial infarction
+I50814  Right heart failure due to left heart failure
+I509    Heart failure, unspecified
+I82423  Acute embolism and thrombosis of iliac vein, bilateral
+K4121   Bilateral femoral hernia, without obstruction or gangrene, recurrent
+L0889   Other specified local infections of the skin and subcutaneous tissue
+O152    Eclampsia complicating the puerperium
+O30899  Other specified multiple gestation, unable to determine number of placenta and number of amniotic sacs, unspecified trimester
+P2930   Pulmonary hypertension of newborn
+P2938   Other persistent fetal circulation
+Q7270   Split foot, unspecified lower limb
+R402360 Coma scale, best motor response, obeys commands, unspecified time
+R402423 Glasgow coma scale score 9-12, at hospital admission
+S31001A Unspecified open wound of lower back and pelvis with penetration into retroperitoneum, initial encounter
+S31609A Unspecified open wound of abdominal wall, unspecified quadrant with penetration into peritoneal cavity, initial encounter
+S36119A Unspecified injury of liver, initial encounter
+S36508A Unspecified injury of other part of colon, initial encounter
+S3720XA Unspecified injury of bladder, initial encounter
+S3730XA Unspecified injury of urethra, initial encounter
+S50369A Insect bite (nonvenomous) of unspecified elbow, initial encounter
+S50869A Insect bite (nonvenomous) of unspecified forearm, initial encounter
+S59139P Salter-Harris Type III physeal fracture of upper end of radius, unspecified arm, subsequent encounter for fracture with malunion
+S60869A Insect bite (nonvenomous) of unspecified wrist, initial encounter
+S91309A Unspecified open wound, unspecified foot, initial encounter
+S93306A Unspecified dislocation of unspecified foot, initial encounter
+T22169A Burn of first degree of unspecified scapular region, initial encounter
+T22569A Corrosion of first degree of unspecified scapular region, initial encounter
+T23049A Burn of unspecified degree of unspecified multiple fingers (nail), including thumb, initial encounter
+T23449A Corrosion of unspecified degree of unspecified multiple fingers (nail), including thumb, initial encounter
+T366X4S Poisoning by rifampicins, undetermined, sequela
+T400X3S Poisoning by opium, assault, sequela
+T43696S Underdosing of other psychostimulants, sequela
+T446X2S Poisoning by alpha-adrenoreceptor antagonists, intentional self-harm, sequela
+T490X6S Underdosing of local antifungal, anti-infective and anti-inflammatory drugs, sequela
+T508X2S Poisoning by diagnostic agents, intentional self-harm, sequela
+T63821S Toxic effect of contact with venomous toad, accidental (unintentional), sequela
+V337XXA Person on outside of three-wheeled motor vehicle injured in collision with car, pick-up truck or van in traffic accident, initial encounter
+V385XXS Driver of three-wheeled motor vehicle injured in noncollision transport accident in traffic accident, sequela
+Y791    Therapeutic (nonsurgical) and rehabilitative orthopedic devices associated with adverse incidents
+Y93G1   Activity, food preparation and clean up
+Y998    Other external cause status
+Z1402   Symptomatic hemophilia A carrier
+Z331    Pregnant state, incidental
+Z333    Pregnant state, gestational carrier
+Z723    Lack of physical exercise
+Z742    Need for assistance at home and no other household member able to render care
+Z8042   Family history of malignant neoplasm of prostate
+Z880    Allergy status to penicillin

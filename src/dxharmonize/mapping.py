@@ -125,14 +125,23 @@ def convert(conn: sqlite3.Connection, code: str, source_system: System) -> Conve
     def target(r: sqlite3.Row) -> Target:
         return Target(r["target"], describe(conn, r["target"], target_system))
 
+    # Rows saying "no equivalent" carry no target code.
+    rows = [r for r in rows if not r["no_map"]]
+
     if any(r["combination"] for r in rows):
         result.kind = "combination"
         for r in rows:
-            lists = result.scenarios.setdefault(r["scenario"], [])
-            idx = r["choice_list"] - 1
-            while len(lists) <= idx:
-                lists.append([])
-            lists[idx].append(target(r))
+            if r["combination"] and r["choice_list"] > 0:
+                scenario, part = r["scenario"], r["choice_list"] - 1
+            else:
+                # Some codes mix combination rows with plain rows (e.g. ICD-9
+                # 249.51 also maps to E08.39 or E09.39 on its own). Plain rows
+                # form one extra scenario, numbered 0, with a single part.
+                scenario, part = 0, 0
+            parts = result.scenarios.setdefault(scenario, [])
+            while len(parts) <= part:
+                parts.append([])
+            parts[part].append(target(r))
         return result
 
     result.targets = [target(r) for r in rows]

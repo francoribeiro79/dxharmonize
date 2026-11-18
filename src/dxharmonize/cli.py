@@ -35,13 +35,21 @@ EXCLUDED_WORDS = ("addenda", "addendum")
 
 
 def _find(directory: Path, key: str) -> Path | None:
+    """Pick the CMS file for ``key`` inside ``directory`` (or its subfolders).
+
+    If several files match, files closest to ``directory`` win (so a sample in
+    a subfolder never replaces the file next to it); among those, the name
+    that sorts last wins (the latest year).
+    """
     for pattern in FILE_PATTERNS[key]:
-        matches = sorted(
+        matches = [
             p for p in directory.rglob(pattern)
             if not any(word in p.name.lower() for word in EXCLUDED_WORDS)
-        )
+        ]
         if matches:
-            return matches[-1]  # latest year sorts last
+            depth = min(len(p.relative_to(directory).parts) for p in matches)
+            closest = [p for p in matches if len(p.relative_to(directory).parts) == depth]
+            return max(closest, key=lambda p: p.name)
     return None
 
 
