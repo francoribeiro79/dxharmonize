@@ -2,6 +2,17 @@
 
 All notable changes to this project are listed here.
 
+## [Unreleased]
+
+### Added
+- Integration tests against the official CMS files: a stratified, reproducible sample (`scripts/make_real_sample.py`) that runs everywhere, and a check of all 86,271 GEM source codes when the full files are present.
+- README: validation section and the distribution of mapping types in the official GEMs.
+
+### Fixed
+- Codes whose GEM rows mix a combination with plain alternatives (e.g. ICD-9 249.51) no longer crash; the plain rows become an extra scenario (`E08.39 | E09.39 || (...) + E08.65`).
+- Rows marked "no equivalent" are skipped when the same code also has real targets.
+- `build --from-dir` prefers files closest to the given folder, so a sample in a subfolder never replaces the main file.
+
 ## [0.1.0] - 2026-11-11
 
 First version.

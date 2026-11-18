@@ -2,11 +2,11 @@
 
 **Harmonise clinical datasets that mix ICD-9-CM and ICD-10-CM diagnosis codes, and know how reliable the result is.**
 
-> **Status:** early development, version 0.1.0. Tested with the official 2018 CMS GEMs and the FY2027 ICD-10-CM code descriptions. See [CHANGELOG.md](CHANGELOG.md) and [ROADMAP.md](ROADMAP.md).
+> **Status:** early development. Validated against the complete official 2018 CMS GEMs: every one of the 86,271 source codes is converted exactly as the official files state (see [Validation](#validation)). See [CHANGELOG.md](CHANGELOG.md) and [ROADMAP.md](ROADMAP.md).
 
 Many countries switched hospital coding from ICD-9-CM to ICD-10-CM: the United States in October 2015, Portugal in January 2017. Any study whose data crosses that date (hospital discharge registries, MIMIC-IV, claims data) has diagnoses in two systems. Counting heart-failure admissions per year, for example, shows a false jump at the transition unless the codes are put into one system first.
 
-Converting codes is the easy part. The hard part is knowing **how much to trust the conversion**: many ICD-9 codes have only an approximate ICD-10 equivalent, some need several codes together, and some have none. `dxharmonize` builds a local database from the official CMS General Equivalence Mappings (GEMs) and reports the mapping type for every code instead of hiding it behind a silent best guess.
+Converting codes is the easy part. The hard part is knowing **how much to trust the conversion**. In the official 2018 GEMs, only **24% of ICD-9 diagnosis codes have an exact ICD-10 equivalent**: half have only an approximate one, 19% have several alternatives, 5% need several codes together, and 3% have none. `dxharmonize` builds a local database from the official CMS General Equivalence Mappings (GEMs) and reports the mapping type for every code instead of hiding it behind a silent best guess.
 
 No patient data is involved: the tool only uses public code tables, and your datasets never leave your computer.
 
@@ -79,6 +79,24 @@ The JSON always has the same three levels: scenarios → parts → alternatives.
 - Empty files give a clear error.
 - Input may be UTF-8 or Windows-1252 (as saved by Excel on Windows); the output is always UTF-8.
 
+## Validation
+
+The test suite checks dxharmonize against the **official CMS files**, not only against hand-written examples:
+
+- `tests/fixtures/real/` holds a stratified sample of the official 2018 GEMs and code descriptions, copied byte for byte by `scripts/make_real_sample.py` (fixed seed, 5 codes per mapping type plus hand-checked anchors such as 401.9 → `I10 | I16.9`). For every sampled code, the test reads the official file directly and compares it with what dxharmonize returns. This runs everywhere, including CI.
+- When the complete files are in `data/raw/`, a second test does the same comparison for **all 86,271 source codes** (14,567 ICD-9 → ICD-10 and 71,704 ICD-10 → ICD-9). It found a real edge case the samples had missed (codes such as ICD-9 249.51 that mix a combination with plain alternatives), which is now handled.
+
+How the official mappings are distributed (2018 GEMs, by source code):
+
+| Mapping type | ICD-9 → ICD-10 | ICD-10 → ICD-9 |
+|---|---|---|
+| exact, one code | 3,521 (24.2%) | 3,516 (4.9%) |
+| approximate, one code | 7,244 (49.7%) | 59,595 (83.1%) |
+| alternatives (`\|`) | 2,712 (18.6%) | 3,621 (5.0%) |
+| combination (`+`) | 668 (4.6%) | 4,241 (5.9%) |
+| no equivalent | 422 (2.9%) | 731 (1.0%) |
+| **total** | **14,567** | **71,704** |
+
 ## Installation
 
 ```bash
@@ -129,8 +147,9 @@ dxharmonize convert-file data.csv --column dx --from icd9 -o data_icd10.csv
 ## Development
 
 ```bash
-python -m pytest     # tests use small synthetic fixtures in tests/fixtures
+python -m pytest     # unit tests (synthetic fixtures) + integration tests (real CMS sample)
 ruff check .         # lint
+python scripts/make_real_sample.py data/raw tests/fixtures/real   # regenerate the real sample
 ```
 
 ```
@@ -141,7 +160,8 @@ src/dxharmonize/
   mapping.py   conversion logic, output formats and search
   batch.py     CSV conversion and reporting
   cli.py       command-line interface
-tests/         pytest suite + synthetic fixtures
+scripts/       make_real_sample.py (stratified sample of the official files)
+tests/         pytest suite: synthetic fixtures + real CMS sample
 ```
 
 ## Disclaimer
